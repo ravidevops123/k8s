@@ -7,22 +7,38 @@ spec:
   selector:
     matchLabels:
       app: myjavaapp
-	  version:2.7.1
-  minReadySeconds: 10
+      version: 2.7.1
+  minReadySeconds: 5
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
-      maxUnavailable: 1  
+      maxUnavailable: 1 
   template:
     metadata:
       labels:
         app: myjavaapp
-		version:2.7.1
+        version: 2.7.1
     spec:
       containers:
       - name: myjavaapp-pod
-        image: ravidevops26/k8sapp:1
+        image: 092363159165.dkr.ecr.us-east-1.amazonaws.com/k8sapp:1
         ports:
         - containerPort: 8080
-		  protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myjavaapp-svc
+  labels:
+    app: myjavaapp
+    version: 2.7.1
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    nodePort: 30002
+    protocol: TCP
+  selector:
+    app: myjavaapp
+    version: 2.7.1
