@@ -1,3 +1,5 @@
+Minikube Installation:
+
 Prerequisites:
 2 CPUs or more
 2GB of free memory
@@ -5,11 +7,11 @@ Prerequisites:
 Internet connection
 Container or virtual machine manager such as: Docker, QEMU, Hyperkit, Hyper-V,  KVM, Parallels, Podman, VirtualBox, or VMware Fusion/Workstation
 
-
 Steps:
-Launch ubuntu20 Instance and add security group all traffic and instance type t2.xlarge
+Launch ubuntu20 Instance and add security group all traffic custom tcp 3000 and 9090 and instance type t2.large volume 20
 Connect to terminal and type apt-get update -y
-Install Docker from official website:
+Install Docker from official website as below:
+Link: https://docs.docker.com/engine/install/ubuntu/
 1.	Set up Docker's Apt repository.
 # Add Docker's official GPG key:
 sudo apt-get update
@@ -17,18 +19,18 @@ sudo apt-get install ca-certificates curl gnupg
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
 # Add the repository to Apt sources:
 echo \
  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
 sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
-
 2.	Install the Docker packages.
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+
+
 Install and configure Kubectl:
-Link: https://r2schools.com/how-to-install-minikube-on-ubuntu-22-04-lts/
+Link: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 1.	Download the latest release with the command:
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 2.	Download the checksum file.
@@ -38,26 +40,20 @@ echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
 4.	Install kubectl using below command:
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 5.	Now verify the kubectl version.
-kubectl version --client --output=yaml
+kubectl version --client
+
 
 Download and install minikube:
-Link: https://r2schools.com/how-to-install-minikube-on-ubuntu-22-04-lts/
+Link: https://minikube.sigs.k8s.io/docs/start/
 6.	Run the below command to download the minikube binary.
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-7.	Install the minikube
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
+sudo dpkg -i minikube_latest_amd64.deb
 8.	Now verify minikube version:
 minikube version
-Configure to Run docker without sudo as below:
-adduser swhizz
-Enter password and confirm password
-press enter and at last press Y
-usermod -aG sudo swhizz
-su - swhizz
-sudo groupadd docker
-sudo usermod -aG docker $USER && newgrp docker
+
 Start Minikube and check status as below:
-sudo minikube start - -nodes 3 - - driver=docker - -wait=false
+Link: https://minikube.sigs.k8s.io/docs/drivers/docker/
+sudo minikube start --nodes 2 -- driver=docker --force
 minikube status
 Verify Cluster Information as below:
 kubectl get nodes
